@@ -8,7 +8,6 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -28,7 +27,6 @@ class PriceMapperTest {
 
     @Test
     void toResponseDto() {
-        var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         var start = LocalDateTime.of(2022, 1, 1, 1, 30, 59);
         var end = LocalDateTime.of(2022,1,31,1,30,59);
         var price = mocks.createPrice();
@@ -37,8 +35,8 @@ class PriceMapperTest {
         assertEquals(1L, priceResponse.getBrandId());
         assertEquals(25.45, priceResponse.getPrice());
         assertEquals(2L, priceResponse.getId());
-        assertEquals(start, LocalDateTime.parse(priceResponse.getStartDate(), formatter));
-        assertEquals(end, LocalDateTime.parse(priceResponse.getEndDate(), formatter));
+        assertEquals(start, priceResponse.getStartDate().toLocalDateTime());
+        assertEquals(end, priceResponse.getEndDate().toLocalDateTime());
     }
 
 }

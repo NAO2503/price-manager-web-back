@@ -1,74 +1,45 @@
 package com.price.manager.back.driving.controllers.adapters;
 
 import com.price.manager.back.application.ports.driving.PriceServicePort;
+import com.price.manager.back.driving.controllers.api.PriceControllerApi;
+import com.price.manager.back.driving.controllers.error.PriceNotFoundException;
 import com.price.manager.back.driving.controllers.models.PriceResponse;
 import com.price.manager.back.driving.controllers.mappers.PriceMapper;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 @Slf4j
-@RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/catalogue")
-@Tag(name = "Price Controller", description = "API to manage prices")
-public class PriceControllerAdapter {
+@RequiredArgsConstructor
+public class PriceControllerAdapter implements PriceControllerApi {
 
     private final PriceServicePort priceServicePort;
 
     private final PriceMapper mapper;
 
-    @Operation(
-            summary = "Get a Price by its brandId, productId and offer date",
-            description = "Returns the applicable price based on brand, product and query date"
-    )
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "Price successfully found",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = PriceResponse.class)
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "Invalid parameters supplied",
-                    content = @Content
-            ),
-            @ApiResponse(
-                    responseCode = "404",
-                    description = "Price not found",
-                    content = @Content
-            )
-    })
-    @GetMapping("/price/findByBrandProductBetweenDate")
+    @Override
     public ResponseEntity<PriceResponse> findByBrandProductBetweenDate(
-            @NotNull(message = "brandId must not be null")
-            @RequestParam String brandId,
+            String brandId,
+            String productId,
+            OffsetDateTime dateQuery) {
 
-            @NotNull(message = "productId must not be null")
-            @RequestParam String productId,
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-            @NotNull(message = "dateQuery must not be null")
-            @RequestParam String dateQuery
-    ) {
         PriceResponse response = mapper.toResponseDto(
-                priceServicePort.findByBrandProductBetweenDate(brandId, productId, dateQuery)
+                priceServicePort.findByBrandProductBetweenDate(brandId, productId, dateQuery.format(formatter))
         );
 
-        return (response != null) ?
-                new ResponseEntity<>(response, HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (response == null) {
+            throw new PriceNotFoundException("No price found for the given parameters");
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

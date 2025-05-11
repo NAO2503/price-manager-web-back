@@ -1,91 +1,145 @@
 package com.price.manager.back.driving.controllers.error;
 
+import com.price.manager.back.driving.controllers.models.Error;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import java.lang.reflect.Method;
+import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CustomExceptionHandlerTest {
 
-    @InjectMocks
     private CustomExceptionHandler exceptionHandler;
 
     @Mock
     private WebRequest webRequest;
 
     @Mock
-    private HandlerMethod handlerMethod;
-
-    private Method method;
-
-
-    @RestController
-    static class PriceControllerAdapter {
-        public void testMethod() {
-        }
-    }
+    private MethodParameter methodParameter;
 
     @BeforeEach
     void setUp() {
-        try {
-            method = PriceControllerAdapter.class.getDeclaredMethod("testMethod");
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+        exceptionHandler = new CustomExceptionHandler();
     }
 
     @Test
-    void handleAllExceptions_ShouldReturnInternalServerError() {
-        // Arrange
-        var errorMessage = "Test error message";
-        var exception = new Exception(errorMessage);
+    void handleNotFound_ShouldReturnNotFoundErrorResponse() {
+        // Given
+        String errorMessage = "Price not found for the given criteria";
+        PriceNotFoundException exception = new PriceNotFoundException(errorMessage);
 
-        // Act
-        when(handlerMethod.getMethod()).thenReturn(method);
-        var responseEntity = exceptionHandler.handleAllExceptions(
-                exception, handlerMethod, webRequest);
-        var errorResponse = responseEntity.getBody();
+        // When
+        ResponseEntity<Error> response = exceptionHandler.handleNotFound(exception, webRequest);
 
-        // Assert
-        assertNotNull(responseEntity);
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, responseEntity.getStatusCode());
-        assertNotNull(errorResponse);
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorResponse.getStatus());
-        assertEquals(PriceControllerAdapter.class.getName(), errorResponse.getError());
-        assertEquals(errorMessage, errorResponse.getMessage());
-
-        // Verify mock interactions
-        verify(handlerMethod, times(1)).getMethod();
+        // Then
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("PRICE_NOT_FOUND", response.getBody().getCode());
+        assertEquals(errorMessage, response.getBody().getMessage());
+        assertNotNull(response.getBody().getTimestamp());
+        assertEquals(ZoneOffset.UTC, response.getBody().getTimestamp().getOffset());
     }
 
     @Test
-    void handleFormat_ShouldReturnBadRequest() {
-        // Arrange
-        var errorMessage = "Invalid number format";
-        var exception = new NumberFormatException(errorMessage);
+    void handleNumberFormat_ShouldReturnBadRequestErrorResponse() {
+        // Given
+        String errorMessage = "For input string: \"abc\"";
+        NumberFormatException exception = new NumberFormatException(errorMessage);
 
-        // Act
-        var responseEntity = exceptionHandler.handleFormat(exception, webRequest);
-        var errorResponse = responseEntity.getBody();
+        // When
+        ResponseEntity<Error> response = exceptionHandler.handleNumberFormat(exception, webRequest);
 
-        // Assert
-        assertNotNull(responseEntity);
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
-        assertNotNull(errorResponse);
-        assertEquals(HttpStatus.BAD_REQUEST.value(), errorResponse.getStatus());
-        assertEquals("Invalid format error", errorResponse.getError());
-        assertEquals(errorMessage, errorMessage);
+        // Then
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("INVALID_FORMAT", response.getBody().getCode());
+        assertEquals("Invalid format: " + errorMessage, response.getBody().getMessage());
+        assertNotNull(response.getBody().getTimestamp());
+        assertEquals(ZoneOffset.UTC, response.getBody().getTimestamp().getOffset());
+    }
+
+    @Test
+    void handleTypeMismatch_ShouldReturnBadRequestErrorResponse() {
+        // Given
+        String parameterName = "productId";
+        String errorMessage = "Invalid product ID format";
+
+        MethodArgumentTypeMismatchException exception = new MethodArgumentTypeMismatchException(
+                "abc",
+                Long.class,
+                parameterName,
+                methodParameter,
+                new NumberFormatException(errorMessage)
+        );
+
+        // When
+        ResponseEntity<Error> response = exceptionHandler.handleTypeMismatch(exception, webRequest);
+
+        // Then
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("INVALID_PARAMETER", response.getBody().getCode());
+        assertTrue(response.getBody().getMessage().startsWith("Parameter '" + parameterName + "' must be valid:"));
+        assertNotNull(response.getBody().getTimestamp());
+        assertEquals(ZoneOffset.UTC, response.getBody().getTimestamp().getOffset());
+    }
+
+    @Test
+    void handleAllExceptions_ShouldReturnInternalServerErrorResponse() {
+        // Given
+        String errorMessage = "Database connection failed";
+        Exception exception = new RuntimeException(errorMessage);
+
+        // When
+        ResponseEntity<Error> response = exceptionHandler.handleAllExceptions(exception, webRequest);
+
+        // Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("INTERNAL_SERVER_ERROR", response.getBody().getCode());
+        assertEquals("An unexpected error occurred: " + errorMessage, response.getBody().getMessage());
+        assertNotNull(response.getBody().getTimestamp());
+        assertEquals(ZoneOffset.UTC, response.getBody().getTimestamp().getOffset());
+    }
+
+    @Test
+    void handleAllExceptions_ShouldReturnInternalServerErrorResponseForNullMessage() {
+        // Given
+        Exception exception = new RuntimeException();
+
+        // When
+        ResponseEntity<Error> response = exceptionHandler.handleAllExceptions(exception, webRequest);
+
+        // Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("INTERNAL_SERVER_ERROR", response.getBody().getCode());
+        assertEquals("An unexpected error occurred: null", response.getBody().getMessage());
+        assertNotNull(response.getBody().getTimestamp());
+    }
+
+    @Test
+    void timestamp_ShouldBeInUtcFormat() {
+        // Given
+        Exception exception = new RuntimeException("Test error");
+
+        // When
+        ResponseEntity<Error> response = exceptionHandler.handleAllExceptions(exception, webRequest);
+
+        // Then
+        assertNotNull(response.getBody());
+        assertNotNull(response.getBody().getTimestamp());
+        assertEquals(ZoneOffset.UTC, response.getBody().getTimestamp().getOffset());
+        assertEquals(0, response.getBody().getTimestamp().getNano());
     }
 }

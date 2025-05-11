@@ -7,20 +7,22 @@ import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @Component
 @Mapper(componentModel = "spring")
 public interface PriceMapper {
 
     @Mapping(target = "id", source = "priceList")
-    @Mapping(target = "startDate", expression = "java(mapDateToString(price.getStartDate()))")
-    @Mapping(target = "endDate", expression = "java(mapDateToString(price.getEndDate()))")
+    @Mapping(target = "startDate", expression = "java(toUtcOffsetDateTime(price.getStartDate()))")
+    @Mapping(target = "endDate", expression = "java(toUtcOffsetDateTime(price.getEndDate()))")
     PriceResponse toResponseDto(Price price);
 
-    default String mapDateToString(LocalDateTime localDateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return localDateTime.format(formatter);
+    default OffsetDateTime toUtcOffsetDateTime(LocalDateTime localDateTime) {
+        if (localDateTime == null) {
+            return null;
+        }
+        return localDateTime.atOffset(ZoneOffset.UTC);
     }
-
 }
