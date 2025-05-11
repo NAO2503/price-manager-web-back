@@ -26,14 +26,12 @@ public class PriceControllerAdapter implements PriceControllerApi {
 
     @Override
     public ResponseEntity<PriceResponse> findByBrandProductBetweenDate(
-            String brandId,
-            String productId,
+            Long brandId,
+            Long productId,
             OffsetDateTime dateQuery) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
         PriceResponse response = mapper.toResponseDto(
-                priceServicePort.findByBrandProductBetweenDate(brandId, productId, dateQuery.format(formatter))
+                priceServicePort.findByBrandProductBetweenDate(brandId, productId, dateQuery.toLocalDateTime())
         );
 
         if (response == null) {

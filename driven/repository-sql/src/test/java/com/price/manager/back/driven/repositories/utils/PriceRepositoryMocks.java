@@ -1,9 +1,9 @@
 package com.price.manager.back.driven.repositories.utils;
 
-import com.price.manager.back.application.utils.DateUtil;
 import com.price.manager.back.domain.Price;
 import com.price.manager.back.driven.repositories.models.PriceEntity;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PriceRepositoryMocks {
@@ -11,8 +11,8 @@ public class PriceRepositoryMocks {
     public PriceEntity createPriceEntity() {
         return PriceEntity.builder()
                 .brandId(1L)
-                .startDate(DateUtil.getDateFromString("2020-06-14 00:00:00"))
-                .endDate(DateUtil.getDateFromString("2020-06-14 23:59:59"))
+                .startDate(LocalDateTime.of(2020,6,14, 0, 0, 0))
+                .endDate(LocalDateTime.of(2020,6,14, 23, 59, 59))
                 .priceList(1L)
                 .productId(35455L)
                 .priority(0)
@@ -24,8 +24,8 @@ public class PriceRepositoryMocks {
     public Price createPrice() {
         return Price.builder()
                 .brandId(1L)
-                .startDate(DateUtil.getDateFromString("2020-06-14 00:00:00"))
-                .endDate(DateUtil.getDateFromString("2020-06-14 23:59:59"))
+                .startDate(LocalDateTime.of(2020,6,14, 0, 0, 0))
+                .endDate(LocalDateTime.of(2020,6,14, 23, 59, 59))
                 .priceList(1L)
                 .productId(35455L)
                 .priority(0)

@@ -33,14 +33,16 @@
             required: true
             description: Brand identifier
             schema:
-              type: string
+              type: integer
+              format: int64
               example: "1"
           - name: productId
             in: query
             required: true
             description: Product identifier
             schema:
-              type: string
+              type: integer
+              format: int64
               example: "35455"
           - name: dateQuery
             in: query

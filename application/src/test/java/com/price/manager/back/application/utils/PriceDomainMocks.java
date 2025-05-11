@@ -2,6 +2,7 @@ package com.price.manager.back.application.utils;
 
 import com.price.manager.back.domain.Price;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PriceDomainMocks {
@@ -9,8 +10,8 @@ public class PriceDomainMocks {
     public List<Price> mockListTest1() {
         return List.of(Price.builder()
                 .brandId(1L)
-                .startDate(DateUtil.getDateFromString("2020-06-14 00:00:00"))
-                .endDate(DateUtil.getDateFromString("2020-06-14 23:59:59"))
+                .startDate(LocalDateTime.of(2020,6,14, 0, 0, 0))
+                .endDate(LocalDateTime.of(2020,6,14, 23, 59, 59))
                 .priceList(1L)
                 .productId(35455L)
                 .priority(0)
@@ -23,8 +24,8 @@ public class PriceDomainMocks {
         return List.of(
                 Price.builder()
                         .brandId(1L)
-                        .startDate(DateUtil.getDateFromString("2020-06-14 15:00:00"))
-                        .endDate(DateUtil.getDateFromString("2020-06-14 18:30:00"))
+                        .startDate(LocalDateTime.of(2020,6,14, 15, 0, 0))
+                        .endDate(LocalDateTime.of(2020,6,14, 18, 30, 0))
                         .priceList(2L)
                         .productId(35455L)
                         .priority(1)
@@ -33,8 +34,8 @@ public class PriceDomainMocks {
                         .build(),
                 Price.builder()
                         .brandId(1L)
-                        .startDate(DateUtil.getDateFromString("2020-06-14 00:00:00"))
-                        .endDate(DateUtil.getDateFromString("2020-12-31 23:59:59"))
+                        .startDate(LocalDateTime.of(2020,6,14, 0, 0, 0))
+                        .endDate(LocalDateTime.of(2020,12,31, 23, 59, 59))
                         .priceList(1L)
                         .productId(35455L)
                         .priority(0)
@@ -48,8 +49,8 @@ public class PriceDomainMocks {
         return List.of(
                 Price.builder()
                         .brandId(1L)
-                        .startDate(DateUtil.getDateFromString("2020-06-14 00:00:00"))
-                        .endDate(DateUtil.getDateFromString("2020-12-31 23:59:59"))
+                        .startDate(LocalDateTime.of(2020,6,14, 0, 0, 0))
+                        .endDate(LocalDateTime.of(2020,12,31, 23, 59, 59))
                         .priceList(1L)
                         .productId(35455L)
                         .priority(0)
@@ -63,8 +64,8 @@ public class PriceDomainMocks {
         return List.of(
                 Price.builder()
                         .brandId(1L)
-                        .startDate(DateUtil.getDateFromString("2020-06-15 00:00:00"))
-                        .endDate(DateUtil.getDateFromString("2020-06-15 11:00:00"))
+                        .startDate(LocalDateTime.of(2020,6,15, 0, 0, 0))
+                        .endDate(LocalDateTime.of(2020,6,15, 11, 0, 0))
                         .priceList(3L)
                         .productId(35455L)
                         .priority(1)
@@ -73,8 +74,8 @@ public class PriceDomainMocks {
                         .build(),
                 Price.builder()
                         .brandId(1L)
-                        .startDate(DateUtil.getDateFromString("2020-06-14 00:00:00"))
-                        .endDate(DateUtil.getDateFromString("2020-12-31 23:59:59"))
+                        .startDate(LocalDateTime.of(2020,6,14, 0, 0, 0))
+                        .endDate(LocalDateTime.of(2020,12,31, 23, 59, 59))
                         .priceList(1L)
                         .productId(35455L)
                         .priority(0)
@@ -88,8 +89,8 @@ public class PriceDomainMocks {
         return List.of(
                 Price.builder()
                         .brandId(1L)
-                        .startDate(DateUtil.getDateFromString("2020-06-15 16:00:00"))
-                        .endDate(DateUtil.getDateFromString("2020-12-31 23:59:59"))
+                        .startDate(LocalDateTime.of(2020,6,15, 16, 0, 0))
+                        .endDate(LocalDateTime.of(2020,12,31, 23, 59, 59))
                         .priceList(1L)
                         .productId(35455L)
                         .priority(1)
@@ -98,8 +99,8 @@ public class PriceDomainMocks {
                         .build(),
                 Price.builder()
                         .brandId(1L)
-                        .startDate(DateUtil.getDateFromString("2020-06-14 00:00:00"))
-                        .endDate(DateUtil.getDateFromString("2020-12-31 23:59:59"))
+                        .startDate(LocalDateTime.of(2020,6,14, 0, 0, 0))
+                        .endDate(LocalDateTime.of(2020,12,31, 23, 59, 59))
                         .priceList(1L)
                         .productId(35455L)
                         .priority(0)

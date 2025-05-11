@@ -18,11 +18,8 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDateTime;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -47,13 +44,10 @@ public class PriceControllerAdapterMvcTest {
         mocks = new PriceMocks();
     }
 
-    ;
-
-
     @Test
     void whenValidInputTest1_thenReturns200() throws Exception {
         // Given
-        when(priceServicePort.findByBrandProductBetweenDate(anyString(), anyString(), any()))
+        when(priceServicePort.findByBrandProductBetweenDate(anyLong(), anyLong(), any()))
                 .thenReturn(Price.builder().build());
         when(priceMapper.toResponseDto(any()))
                 .thenReturn(mocks.createPriceResponse1());
@@ -75,7 +69,7 @@ public class PriceControllerAdapterMvcTest {
     @Test
     void whenValidInputTest2_thenReturns200() throws Exception {
         // Given
-        when(priceServicePort.findByBrandProductBetweenDate(anyString(), anyString(), any()))
+        when(priceServicePort.findByBrandProductBetweenDate(anyLong(), anyLong(), any()))
                 .thenReturn(Price.builder().build());
         when(priceMapper.toResponseDto(any()))
                 .thenReturn(mocks.createPriceResponse2());
@@ -97,7 +91,7 @@ public class PriceControllerAdapterMvcTest {
     @Test
     void whenValidInputTest3_thenReturns200() throws Exception {
         // Given
-        when(priceServicePort.findByBrandProductBetweenDate(anyString(), anyString(), any()))
+        when(priceServicePort.findByBrandProductBetweenDate(anyLong(), anyLong(), any()))
                 .thenReturn(Price.builder().build());
         when(priceMapper.toResponseDto(any()))
                 .thenReturn(mocks.createPriceResponse3());
@@ -119,7 +113,7 @@ public class PriceControllerAdapterMvcTest {
     @Test
     void whenValidInputTest4_thenReturns200() throws Exception {
         // Given
-        when(priceServicePort.findByBrandProductBetweenDate(anyString(), anyString(), any()))
+        when(priceServicePort.findByBrandProductBetweenDate(anyLong(), anyLong(), any()))
                 .thenReturn(Price.builder().build());
         when(priceMapper.toResponseDto(any()))
                 .thenReturn(mocks.createPriceResponse4());
