@@ -34,7 +34,15 @@ Adicionalmente, existe un módulo **(Boot)** que define el ensamblado de los dis
 ![alt text](images/hexagonal-driving-driven2.png)
 
 ### Compilación e Inicio
-Para compilar y tener todos los recursos, ejecuta el siguiente comando:
+Para compilar y tener todos los recursos, ejecuta el siguientes comandos:
+
+Generar los recursos de swagger:
+
+```bash
+mvn mvn generate-sources
+```
+
+Compilar el proyecto:
 
 ```bash
 mvn clean install
@@ -50,20 +58,31 @@ java -jar boot/target/price-manager-web-back-boot-1.0.0.jar
 
 Accede a la interfaz de Swagger en el siguiente enlace:
 
-* http://localhost:9090/swagger-ui/index.html
-
-![alt text](images/swagger_openapi3.png)
+* [Open API sswagger 3.0](https://github.com/NAO2503/price-manager-web-back/blob/main/driving/api-rest/contracts/openapi.yaml)
 
 ### Pruebas
 
 Recomendamos utilizar Postman importando la colección desde este enlace:
 
-* [Catalogue.postman_collection_V2.json](https://github.com/NAO2503/price-manager-web-back/blob/main/boot/src/main/resources/Catalogue.postman_collection_V2.json)
+* [Price.postman_collection.json](https://github.com/NAO2503/price-manager-web-back/blob/main/driving/api-rest/postman/Price.postman_collection.json)
+
+#### Visualización interactiva
+
+Puedes visualizar la API de forma interactiva a través de estos enlaces:
+
+[![API Docs](https://img.shields.io/badge/API%20Docs-Swagger-green)](https://editor.swagger.io/?url=https://raw.githubusercontent.com/NAO2503/price-manager-web-back/main/driving/api-rest/contracts/openapi.yaml)
+[![API Docs](https://img.shields.io/badge/API%20Docs-Redoc-orange)](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/NAO2503/price-manager-web-back/main/driving/api-rest/contracts/openapi.yaml)
+
+#### Endpoints principales
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/v1/price/findByBrandProductBetweenDate` | Obtiene el precio aplicable según marca, producto y fecha de consulta |
 
 ### Ejemplo de petición <font color="green">GET</font>
 
-* http://localhost:9090/api/catalogue/price/findByBrandProductBetweenDate?dateQuery=2020-06-14%2010:00:00&productId=35455&brandId=1
+* http://localhost:9090/v1/price/findByBrandProductBetweenDate?dateQuery=2020-06-14T2010:00:00Z&productId=35455&brandId=1
 
-![alt text](images/postman.png)
+![alt text](images/postman_v1.png)
 
-![alt text](images/postman-tests.png)
+![alt text](images/postman_v1_tests.png)
