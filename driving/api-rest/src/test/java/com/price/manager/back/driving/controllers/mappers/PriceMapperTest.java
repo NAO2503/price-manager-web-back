@@ -9,8 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class PriceMapperTest {
@@ -37,6 +36,20 @@ class PriceMapperTest {
         assertEquals(2L, priceResponse.getId());
         assertEquals(start, priceResponse.getStartDate().toLocalDateTime());
         assertEquals(end, priceResponse.getEndDate().toLocalDateTime());
+    }
+
+    @Test
+    void toResponseDtoWithNullEndDate() {
+        var start = LocalDateTime.of(2022, 1, 1, 1, 30, 59);
+        var price = mocks.createPrice();
+        price.setEndDate(null);
+        var priceResponse = priceMapper.toResponseDto(price);
+        assertNotNull(priceResponse);
+        assertEquals(1L, priceResponse.getBrandId());
+        assertEquals(25.45, priceResponse.getPrice());
+        assertEquals(2L, priceResponse.getId());
+        assertEquals(start, priceResponse.getStartDate().toLocalDateTime());
+        assertNull(priceResponse.getEndDate());
     }
 
 }
